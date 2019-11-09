@@ -8,11 +8,47 @@ var getRandomWord = function(array) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-function generateGenre() {
-  var adjective = getRandomWord(words.adjectives);
-  var noun = getRandomWord(words.nouns);
+function weightedRand(spec) {
+  var i, j, table=[];
+  for (i in spec) {
+    // The constant 10 below should be computed based on the
+    // weights in the spec for a correct and optimal table size.
+    // E.g. the spec {0:0.999, 1:0.001} will break this impl.
+    for (j=0; j<spec[i]*10; j++) {
+      table.push(i);
+    }
+  }
 
-  var genre = adjective + " " + noun;
+  return table[Math.floor(Math.random() * table.length)];
+}
+
+function generateGenre() {
+  var numberOfAdjectivesWeighting = {
+    1: 0.7,
+    2: 0.25,
+    3: 0.05
+  }
+
+  var numberOfNounsWeighting = {
+    1: 0.8,
+    2: 0.15,
+    3: 0.05
+  }
+
+  var numberOfAdjectives = weightedRand(numberOfAdjectivesWeighting);
+  var numberOfNouns = weightedRand(numberOfNounsWeighting);
+  var adjectives = [], nouns = [];
+
+  for (var i = 0; i < numberOfAdjectives; i++) {
+    adjectives.push(getRandomWord(words.adjectives));
+  }
+
+  for (var i = 0; i < numberOfNouns; i++) {
+    nouns.push(getRandomWord(words.nouns));
+  }
+
+  var genre = adjectives.join(" ") + " " + nouns.join(" ");
+  genre = genre.replace(/\-\s/, "-");
 
   return genre;
 }
