@@ -1,6 +1,18 @@
 var express   = require('express');
 var nunjucks  = require('nunjucks');
+var path      = require('path');
 var app       = express();
+
+nunjucks.configure('views', {
+  autoescape: true,
+  express: app,
+  noCache: true
+});
+
+app.set({'views': './views'});
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/styles', express.static(path.join(__dirname, 'public/styles')));
 
 var words = require('./words.json');
 
@@ -56,7 +68,8 @@ function generateGenre() {
 app.get('/', function (req, res) {
   var genre = generateGenre();
   console.log(genre);
-  res.send(genre);
+
+  res.render('index.html', { genre: genre });
 });
 
 var server = app.listen(3000, function () {
