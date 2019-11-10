@@ -1,3 +1,51 @@
+@import 'normalize';
+@import 'mq';
+
 body {
   background-color: pink;
+  margin: 20px;
+}
+
+h1 {
+  color: #fff;
+  font-size: 20px;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  border-bottom: 1px solid #fff;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.genre {
+  width: 80vw;
+  margin: 20px auto;
+
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: lowercase;
+
+  @include mq($from: tablet) {
+    font-size: 80px;
+    line-height: 82px;
+  }
+
+  @include mq($from: desktop) {
+    font-size: 120px;
+    line-height: 120px;
+  }
+
+  @include mq($from: wide) {
+    font-size: 200px;
+    line-height: 180px;
+  }
+
+  color: #fff;
+}
+
+.actions {
+  display: none;
 }
