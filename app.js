@@ -65,11 +65,29 @@ function generateGenre() {
   return genre;
 }
 
+function buildUrlQueryString(url, query) {
+  url = url + "?";
+  for (q in query) {
+    url += q + "=" + encodeURIComponent(query[q]) + "&";
+  }
+  return url;
+}
+
 app.get('/', function (req, res) {
   var genre = generateGenre();
   console.log(genre);
 
-  res.render('index.html', { genre: genre });
+  var twitterUrl = "https://twitter.com/intent/tweet";
+  var twitterQuery = {
+    text: "My new favourite genre is " + genre,
+    url: "https://musicgenre.site",
+    hashtags: "musicgenreator",
+    via: "alex_tea"
+  }
+
+  var twitterShareLink = buildUrlQueryString(twitterUrl, twitterQuery);
+
+  res.render('index.html', { genre: genre, twitter_share_link: twitterShareLink });
 });
 
 var server = app.listen(3000, function () {
