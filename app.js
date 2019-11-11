@@ -1,6 +1,7 @@
 var express   = require('express');
 var nunjucks  = require('nunjucks');
 var path      = require('path');
+var scraper = require('./utils/scraper')
 var app       = express();
 
 nunjucks.configure('views', {
@@ -87,8 +88,17 @@ app.get('/', function (req, res) {
 
   var twitterShareLink = buildUrlQueryString(twitterUrl, twitterQuery);
 
+  // capture screenshot
+  scraper
+    .getScreenShot('http://localhost:3000/screenshot/'+genre)
+    .catch(err => reject('Screenshot failed'))
+
   res.render('index.html', { genre: genre, twitter_share_link: twitterShareLink });
 });
+
+app.get('/screenshot/:genre', function (req, res) {
+  res.render('screenshot.html', { genre: req.params.genre });
+})
 
 var server = app.listen(3000, function () {
   var host = server.address().address;
