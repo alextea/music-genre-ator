@@ -22,6 +22,10 @@ $breakpoints: (
   wide:    1300px
 );
 
+html {
+  height: 100%;
+}
+
 body {
   font-family: "aktiv-grotesk-extended", sans-serif;
 
@@ -45,7 +49,11 @@ body {
      100%{background-position:0% 50%}
   }
 
-  margin: 20px;
+  height: 100%;
+  margin: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 h1 {
@@ -61,8 +69,13 @@ h1 {
 }
 
 .genre {
+  min-height: 20vw;
   width: 80vw;
   margin: 20px auto;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 
   font-size: 40px;
   line-height: 44px;
@@ -90,9 +103,8 @@ h1 {
 
 .actions {
   border-top: 1px solid #fff;
-  margin-top: 20vh;
-  padding-top: 10px;
-  
+  padding-top: 20px;
+
   ul {
     list-style: none;
     margin: 0;
@@ -100,17 +112,45 @@ h1 {
 
     @include mq($from: tablet) {
       display: flex;
+      justify-content: space-between;
     }
 
     li {
       flex: 1 1 0;
-
       color: #fff;
 
+      margin-bottom: 1em;
+
+      @include mq($from: tablet) {
+        margin-right: 5%;
+      }
+
+      &:last-child {
+        @include mq($from: tablet) {
+          margin-right: 0;
+        }
+      }
     }
 
     a {
+      display: block;
+      box-sizing: border-box;
+      height: 100%;
+      width: 100%;
+
       color: #fff;
+      text-decoration: none;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+
+      border: 1px solid #fff;
+      padding: 1em;
+
+      &:hover {
+        background-color: #fff;
+        color: #000;
+      }
     }
   }
 }

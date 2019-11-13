@@ -12,7 +12,7 @@
 
   <meta name="og:title" content="Generate your own musical genre">
   <meta name="og:type" content="website">
-  <meta name="og:description" content="{{ genre }}">
+  <meta name="og:description" content="My new favourite genre is {{ genre }}">
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:creator" content="@alex_tea" />
 </head>
@@ -25,14 +25,9 @@
   <div class="actions">
     <ul>
       <li><a href="/">Generate another</a></li>
-      <li>Share:</li>
-      <li><a href="{{ twitter_share_link }}" target="_blank">Twitter</a></li>
-      <li><a href="{{ facebook_share_link }}" target="_blank">Facebook</a></li>
+      <li><a href="{{ twitter_share_link }}" target="_blank">Share on Twitter</a></li>
+      <li><a href="{{ facebook_share_link }}" target="_blank">Share on Facebook</a></li>
     </ul>
-
   </div>
-
-  <div class="share"></div>
-
 </body>
 </html>
