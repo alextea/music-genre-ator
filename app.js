@@ -1,8 +1,8 @@
-var express   = require('express');
-var nunjucks  = require('nunjucks');
-var path      = require('path');
-var scraper = require('./utils/scraper')
-var app       = express();
+var express     = require('express');
+var nunjucks    = require('nunjucks');
+var path        = require('path');
+var screenshot  = require('./utils/screenshot')
+var app         = express();
 
 nunjucks.configure('views', {
   autoescape: true,
@@ -101,7 +101,7 @@ app.get('/', function (req, res) {
   var faceBookShareLink = buildUrlQueryString(faceBookUrl, faceBookQuery);
 
   // capture screenshot
-  scraper
+  screenshot
     .getScreenShot('http://localhost:3000/screenshot/'+genre)
     .catch(err => reject('Screenshot failed'))
 
