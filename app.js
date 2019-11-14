@@ -71,6 +71,8 @@ function buildUrlQueryString(url, query) {
   for (q in query) {
     url += q + "=" + encodeURIComponent(query[q]) + "&";
   }
+
+  url = url.slice(0, -1);
   return url;
 }
 
@@ -88,12 +90,27 @@ app.get('/', function (req, res) {
 
   var twitterShareLink = buildUrlQueryString(twitterUrl, twitterQuery);
 
+  var faceBookUrl = "https://www.facebook.com/dialog/share?";
+
+  var faceBookQuery = {
+    href: "https://musicgenre.site",
+    display: "page",
+    redirect_uri: "ttps://musicgenre.site"
+  }
+
+  var faceBookShareLink = buildUrlQueryString(faceBookUrl, faceBookQuery);
+
   // capture screenshot
   scraper
     .getScreenShot('http://localhost:3000/screenshot/'+genre)
     .catch(err => reject('Screenshot failed'))
 
-  res.render('index.html', { genre: genre, twitter_share_link: twitterShareLink });
+  res.render('index.html',
+    {
+      genre: genre,
+      twitter_share_link: twitterShareLink,
+      facebook_share_link: faceBookShareLink
+    });
 });
 
 app.get('/screenshot/:genre', function (req, res) {
