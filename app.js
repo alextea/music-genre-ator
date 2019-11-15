@@ -66,6 +66,15 @@ function generateGenre() {
   return genre;
 }
 
+function textToSlug(text) {
+  var slug = text
+              .toLowerCase()
+              .replace(/[^a-z0-9\s]*/g, '')
+              .replace(/\s+/g, '-');
+
+  return slug;
+}
+
 function buildUrlQueryString(url, query) {
   url = url + "?";
   for (q in query) {
@@ -79,6 +88,18 @@ function buildUrlQueryString(url, query) {
 app.get('/', function (req, res) {
   var genre = generateGenre();
   console.log(genre);
+
+  var slug = textToSlug(genre);
+
+  res.redirect('/'+slug);
+});
+
+app.get('/screenshot/:genre', function (req, res) {
+  res.render('screenshot.html', { genre: req.params.genre });
+})
+
+app.get('/:genre', function (req, res) {
+  var genre = req.params.genre;
 
   var twitterUrl = "https://twitter.com/intent/tweet";
   var twitterQuery = {
@@ -111,17 +132,13 @@ app.get('/', function (req, res) {
       twitter_share_link: twitterShareLink,
       facebook_share_link: faceBookShareLink
     });
-});
-
-app.get('/screenshot/:genre', function (req, res) {
-  res.render('screenshot.html', { genre: req.params.genre });
 })
 
 var server = app.listen(3000, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('Example app listening at http://%s:%s', host, port);
+  console.log('Music Genre-ator app listening at http://%s:%s', host, port);
 });
 
 for (var i = 0; i < 10; i++) {
