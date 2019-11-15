@@ -11,9 +11,11 @@
     "nunjucks": "^3.2.0"
   },
   "scripts": {
-    "build-css": "node-sass -o public/styles sass",
+    "deploy": "npm build-css",
+    "build-css": "node-sass --output-style compressed -o public/styles sass",
     "watch-css": "node-sass -w sass -o public/styles",
-    "server": "nodemon app.js",
-    "start": "npm-run-all -p watch-css server"
+    "dev-server": "nodemon app.js",
+    "dev-start": "npm-run-all -p watch-css server",
+    "server": "node app.js"
   }
 }
