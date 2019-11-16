@@ -1,4 +1,4 @@
 ---
 deployment:
   tasks:
-    - npm deploy
+    - /bin/bash /home/musicgen/repositories/music-genre-ator/deploy.sh
