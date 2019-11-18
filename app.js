@@ -142,7 +142,10 @@ app.get('/', function (req, res, next) {
         // capture screenshot
         screenshot
           .getScreenShot(siteUrl + '/screenshot/', slug)
-          .catch(err => reject('Screenshot failed'))
+          .catch(error => {
+            console.log('Error: ')
+            console.log(JSON.stringify(error))
+          })
 
         var twitterShareLink = makeTwitterShareUrl(genre, slug);
         var faceBookShareLink = makeFacebookShareUrl(genre, slug);
