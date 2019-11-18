@@ -1,15 +1,10 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 set -x
+source /home/musicgen/.bash_profile
 
-# delete existing deployment
-rm -rf /home/musicgen/apps/music-genre-ator
+cd /home/musicgen/repositories/music-genre-ator
 
-# copy new deploy
-cp -r  /home/musicgen/repositories/music-genre-ator /home/musicgen/apps
-
-# cd to new direction
-cd /home/musicgen/apps/music-genre-ator
-
+nvm use 10.17
 npm install
-npm deploy
+npm run deploy

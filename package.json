@@ -14,7 +14,7 @@
   },
   "scripts": {
     "deploy": "npm run build-css && npm run create-db",
-    "create-db": "node create_database.js",
+    "create-db": "node utils/create_database.js",
     "build-css": "node-sass --output-style compressed -o public/styles sass",
     "watch-css": "node-sass -w sass -o public/styles",
     "dev-server": "nodemon app.js",
