@@ -1,7 +1,7 @@
 var express     = require('express');
 var nunjucks    = require('nunjucks');
 var path        = require('path');
-var screenshot  = require('./utils/screenshot')
+var screenshot  = require('./utils/screenshot');
 var app         = express();
 
 nunjucks.configure('views', {
@@ -13,6 +13,7 @@ nunjucks.configure('views', {
 app.set({'views': './views'});
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.use('/styles', express.static(path.join(__dirname, 'public/styles')));
 
 var words = require('./words.json');
