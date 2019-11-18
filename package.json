@@ -18,7 +18,7 @@
     "build-css": "node-sass --output-style compressed -o public/styles sass",
     "watch-css": "node-sass -w sass -o public/styles",
     "dev-server": "nodemon app.js",
-    "dev-start": "npm-run-all -p watch-css server",
+    "dev-start": "npm-run-all -p watch-css start",
     "start": "node app.js"
   },
   "devDependencies": {
