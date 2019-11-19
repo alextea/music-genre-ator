@@ -142,12 +142,9 @@ app.get('/', function (req, res, next) {
         database.addGenre(genre, slug);
 
         // capture screenshot
-        screenshot
-          .getScreenShot(siteUrl + '/screenshot/', slug)
-          .catch(error => {
-            console.log('Error: ')
-            console.log(JSON.stringify(error))
-          })
+        // screenshot
+        //   .getScreenShot(siteUrl + '/screenshot/', slug)
+        //   .catch(console.error)
 
         var twitterShareLink = makeTwitterShareUrl(genre, slug);
         var faceBookShareLink = makeFacebookShareUrl(genre, slug);
