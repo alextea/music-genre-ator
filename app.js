@@ -109,8 +109,10 @@ function makeTwitterShareUrl(genre, slug) {
 }
 
 function makeFacebookShareUrl(genre, slug) {
-  var faceBookUrl = "https://www.facebook.com/dialog/share?";
+  var faceBookUrl = "https://www.facebook.com/dialog/share";
   var faceBookQuery = {
+    app_id: 2640283582660316,
+    quote: "My new favourite genre is " + genre,
     href: siteUrl + "/" + slug,
     display: "page",
     redirect_uri: siteUrl
