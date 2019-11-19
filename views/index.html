@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="/styles/styles.css">
   <link rel="stylesheet" href="https://use.typekit.net/bwe1rlc.css">
 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <meta name="og:title" content="Generate your own musical genre">
   <meta name="og:type" content="website">
   <meta name="og:description" content="My new favourite genre is {{ genre }}">
@@ -28,6 +30,7 @@
   <div class="actions">
     <ul>
       <li><a href="/">Generate another</a></li>
+      <li><a href="/{{ slug }}">Get Permalink</a></li>
       <li><a href="{{ twitter_share_link }}" target="_blank">Share on Twitter</a></li>
       <li><a href="{{ facebook_share_link }}" target="_blank">Share on Facebook</a></li>
     </ul>
