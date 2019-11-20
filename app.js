@@ -96,10 +96,13 @@ function buildUrlQueryString(url, query) {
   return url;
 }
 
+var sharingEmojis = ["🎤", "🎧", "🎼", "🎹", "🥁", "🎷", "🎺", "🎸", "🎻", "💽", "💿", "🔊", "👩‍🎤", "👨🏻‍🎤" ];
+
 function makeTwitterShareUrl(genre, slug) {
+  var emoji = getRandomWord(sharingEmojis);
   var twitterUrl = "https://twitter.com/intent/tweet";
   var twitterQuery = {
-    text: "My new favourite genre is " + genre,
+    text: "My new favourite genre is " + emoji + " " + genre + " " + emoji,
     url: siteUrl + "/" + slug,
     hashtags: "musicgenreator",
     via: "alex_tea"
@@ -109,13 +112,14 @@ function makeTwitterShareUrl(genre, slug) {
 }
 
 function makeFacebookShareUrl(genre, slug) {
+  var emoji = getRandomWord(sharingEmojis);
   var faceBookUrl = "https://www.facebook.com/dialog/share";
   var faceBookQuery = {
     app_id: 2640283582660316,
-    quote: "My new favourite genre is " + genre,
+    quote: "My new favourite genre is " + emoji + " " + genre + " " + emoji,
     href: siteUrl + "/" + slug,
     display: "page",
-    redirect_uri: siteUrl
+    redirect_uri: siteUrl + "/" + slug
   }
 
   return buildUrlQueryString(faceBookUrl, faceBookQuery);
@@ -171,6 +175,7 @@ app.get('/:slug', function (req, res, next) {
       if (!data) {
         var err = new Error("Genre not found");
         err.status = 404;
+        console.error(err);
         next(err);
       } else {
         console.log(slug + ' exists in db');
@@ -198,7 +203,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(function (err, req, res, next) {
-  console.log(err.stack)
+  console.error(err)
   res.status(500).send(err.message)
 });
 
