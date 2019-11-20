@@ -4,3 +4,4 @@
 public
 node_modules/*
 data/database.sqlite3
+tmp/
