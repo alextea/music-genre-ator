@@ -24,6 +24,8 @@ class AppDAO {
         }
       })
     })
+
+    this.db.close()
   }
 
   run(sql, params = []) {
@@ -37,6 +39,8 @@ class AppDAO {
           resolve({ id: this.lastID })
         }
       })
+
+      this.db.close()
     })
   }
 }
