@@ -2,6 +2,6 @@
 .DS_Store
 .start.pid
 public
-node_modules/*
+node_modules
 data/database.sqlite3
 tmp/
