@@ -6,6 +6,8 @@ var database    = require('./utils/database_utils');
 var words       = require('./data/words.json');
 var app         = express();
 
+const config = require('./config.json');
+
 nunjucks.configure('views', {
   autoescape: true,
   express: app,
@@ -18,15 +20,15 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.use('/styles', express.static(path.join(__dirname, 'public/styles')));
 
+var env = process.env.NODE_ENV || "development";
+var siteUrl = "http://localhost:3000";
 
-if (process.env.NODE_ENV == "production") {
+if (env == "production") {
   var siteUrl = "https://musicgenre.site";
-} else {
-  var siteUrl = "http://localhost:3000";
 }
 
-console.log('process.env.NODE_ENV = ' + process.env.NODE_ENV);
-console.log('siteUrl = ' + siteUrl)
+console.log({env});
+console.log({siteUrl})
 
 function getRandomWord(array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -125,10 +127,6 @@ function makeFacebookShareUrl(genre, slug) {
   return buildUrlQueryString(faceBookUrl, faceBookQuery);
 }
 
-app.get('/screenshot/:genre', function (req, res) {
-  res.render('screenshot.html', { genre: req.params.genre });
-})
-
 app.get('/favicon.ico', function(req, res, next) {
   res.sendStatus(404);
 })
@@ -146,19 +144,25 @@ app.get('/', function (req, res, next) {
         database.addGenre(genre, slug);
 
         // capture screenshot
-        // screenshot
-        //   .getScreenShot(siteUrl + '/screenshot/', slug)
-        //   .catch(console.error)
+        screenshot
+          .getScreenShot(siteUrl + '/screenshot/', slug)
+          .then(function(response){
+            console.log("captured screenshot",response)
+          })
+          .catch(console.error)
 
         var twitterShareLink = makeTwitterShareUrl(genre, slug);
         var faceBookShareLink = makeFacebookShareUrl(genre, slug);
+
+        var socialMediaCard = "/images/social-media-card-0" + (Math.floor(Math.random() * 6) + 1) + ".png";
 
         res.render('index.html',
           {
             slug: slug,
             genre: genre,
             twitter_share_link: twitterShareLink,
-            facebook_share_link: faceBookShareLink
+            facebook_share_link: faceBookShareLink,
+            social_media_card: socialMediaCard,
         });
       }
     })
@@ -167,7 +171,7 @@ app.get('/', function (req, res, next) {
     })
 })
 
-app.get('/:slug', function (req, res, next) {
+app.get('(/screenshot)?/:slug', function (req, res, next) {
   var slug = req.params.slug;
   console.log("slug = "+slug);
   database.getGenre(slug)
@@ -178,18 +182,23 @@ app.get('/:slug', function (req, res, next) {
         console.error(err);
         next(err);
       } else {
-        console.log(slug + ' exists in db');
+        console.log(slug + ' exists in db', {data});
         var genre = data.genre;
 
         var twitterShareLink = makeTwitterShareUrl(genre, slug);
         var faceBookShareLink = makeFacebookShareUrl(genre, slug);
 
-        res.render('index.html',
+        var socialMediaCard = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${slug}.${config.screenshotFormat}`
+
+        var layout = (!req.params[0]) ? 'index.html' : 'screenshot.html';
+
+        res.render(layout,
           {
             slug: slug,
             genre: genre,
             twitter_share_link: twitterShareLink,
-            facebook_share_link: faceBookShareLink
+            facebook_share_link: faceBookShareLink,
+            social_media_card: socialMediaCard
         });
       }
     })
