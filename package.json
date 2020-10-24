@@ -10,18 +10,18 @@
     "node-fetch": "^2.6.1",
     "node-sass": "^4.13.0",
     "nunjucks": "^3.2.0",
-    "puppeteer": "^2.0.0",
     "sqlite3": "^5.0.0"
   },
   "scripts": {
     "deploy": "npm run build-css && npm run create-db",
+    "postinstall": "npm run deploy",
     "create-db": "node utils/create_database.js",
     "copy-images": "cp -r images public/",
     "build-css": "node-sass --output-style compressed -o public/styles sass",
     "watch-css": "node-sass -w sass -o public/styles",
     "dev-server": "nodemon app.js",
     "dev-start": "npm run copy-images && npm-run-all -p watch-css dev-server",
-    "start": "npm run copy-images && node app.js"
+    "start": "node app.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.4",
