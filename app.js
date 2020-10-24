@@ -165,6 +165,9 @@ app.get('/', function (req, res, next) {
             facebook_share_link: faceBookShareLink,
             social_media_card: socialMediaCard,
         });
+      } else {
+        // redirect to permalink
+        res.redirect(`/${slug}`)
       }
     })
     .catch(function(error) {
