@@ -157,6 +157,9 @@ app.get('/', function (req, res, next) {
 
         var socialMediaCard = "/images/social-media-card-0" + (Math.floor(Math.random() * 6) + 1) + ".png";
 
+        // don't cache the root url
+        res.setHeader('Cache-Control', 'max-age=1');
+
         res.render('index.html',
           {
             slug: slug,
