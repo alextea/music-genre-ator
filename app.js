@@ -151,27 +151,24 @@ app.get('/', function (req, res, next) {
             console.log("captured screenshot",response)
           })
           .catch(console.error)
-
-        var twitterShareLink = makeTwitterShareUrl(genre, slug);
-        var faceBookShareLink = makeFacebookShareUrl(genre, slug);
-
-        var socialMediaCard = "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
-
-        // don't cache the root url
-        res.setHeader('Cache-Control', 'max-age=1');
-
-        res.render('index.html',
-          {
-            slug: slug,
-            genre: genre,
-            twitter_share_link: twitterShareLink,
-            facebook_share_link: faceBookShareLink,
-            social_media_card: socialMediaCard,
-        });
-      } else {
-        // redirect to permalink
-        res.redirect(`/${slug}`)
       }
+
+      var twitterShareLink = makeTwitterShareUrl(genre, slug);
+      var faceBookShareLink = makeFacebookShareUrl(genre, slug);
+
+      var socialMediaCard = "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
+
+      // don't cache the root url
+      res.setHeader('Cache-Control', 'max-age=1');
+
+      res.render('index.html',
+        {
+          slug: slug,
+          genre: genre,
+          twitter_share_link: twitterShareLink,
+          facebook_share_link: faceBookShareLink,
+          social_media_card: socialMediaCard,
+      });
     })
     .catch(function(error) {
       next(error);
