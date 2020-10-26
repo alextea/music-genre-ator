@@ -1,5 +1,7 @@
 # Music Genre-ator
 
+![music genre-ator](https://raw.githubusercontent.com/alextea/music-genre-ator/master/images/social-media-card-07.png)
+
 ## Generate your own music genre
 
 🎤 🎧 🎼 🎹 🥁 🎷 🎺 🎸 🎻 💽 💿 🔊 👩‍🎤 👨🏻‍🎤
