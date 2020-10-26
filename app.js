@@ -156,7 +156,7 @@ app.get('/', function (req, res, next) {
       var twitterShareLink = makeTwitterShareUrl(genre, slug);
       var faceBookShareLink = makeFacebookShareUrl(genre, slug);
 
-      var socialMediaCard = "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
+      var socialMediaCard = siteUrl + "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
 
       // don't cache the root url
       res.setHeader('Cache-Control', 'max-age=1');
