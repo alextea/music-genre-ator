@@ -146,7 +146,7 @@ app.get('/', function (req, res, next) {
 
         // capture screenshot
         screenshot
-          .getScreenShot(`${siteUrl}/screenshot/${slug}`)
+          .getScreenShot(`${siteUrl}/screenshot/`, slug)
           .then(function(response){
             console.log("captured screenshot",response)
           })
@@ -157,7 +157,6 @@ app.get('/', function (req, res, next) {
       var faceBookShareLink = makeFacebookShareUrl(genre, slug);
 
       var emoji = getRandomWord(sharingEmojis);
-      console.log(emoji)
       var description = `My new favourite genre is ${emoji} ${genre} ${emoji} — generate your own at ${siteUrl}`;
       var socialMediaCard = siteUrl + "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
 
