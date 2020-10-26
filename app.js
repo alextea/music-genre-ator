@@ -132,6 +132,15 @@ app.get('/favicon.ico', function(req, res, next) {
   res.sendStatus(404);
 })
 
+app.get('/robots.txt', function (req, res, next) {
+  res.type('text/plain');
+  res.send(`
+    User-agent: *
+    Allow: /$
+    Disallow: /
+  `);
+})
+
 app.get('/', function (req, res, next) {
   var genre = generateGenre();
   var slug = textToSlug(genre);
