@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>{{ title }}</title>
+
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://use.typekit.net/bwe1rlc.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body class="gradient-{{ [1, 2, 3, 4, 5, 6, 7, 8] | random }}">
+  <h1>Music Genre-ator – {{ title }}</h1>
+
+  <div class="genre">{{ title }}: {{ description }}</div>
+
+  <div class="actions">
+    <ul>
+      <li><a href="/">Generate another</a></li>
+    </ul>
+  </div>
+</body>
+</html>

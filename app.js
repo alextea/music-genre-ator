@@ -186,7 +186,6 @@ app.get('(/screenshot)?/:slug', function (req, res, next) {
       if (!data) {
         var err = new Error("Genre not found");
         err.status = 404;
-        console.error(err);
         next(err);
       } else {
         console.log(slug + ' exists in db', {data});
@@ -217,14 +216,15 @@ app.get('(/screenshot)?/:slug', function (req, res, next) {
     })
 })
 
-app.use(function (req, res, next) {
-  res.status(404).send("Oops")
-});
-
 app.use(function (err, req, res, next) {
   console.error(err)
-  res.status(500).send(err.message)
+  res.status(err.status);
+  res.render('error.html', {
+    title: `${err.status} error`,
+    description: err.message
+  })
 });
+
 
 var server = app.listen(port, function () {
   var host = server.address().address;
