@@ -105,8 +105,8 @@ function makeTwitterShareUrl(genre, slug) {
   var emoji = getRandomWord(sharingEmojis);
   var twitterUrl = "https://twitter.com/intent/tweet";
   var twitterQuery = {
-    text: "My new favourite genre is " + emoji + " " + genre + " " + emoji,
-    url: siteUrl + "/" + slug,
+    text: `My new favourite genre is ${emoji} ${genre} ${emoji}`,
+    url: `${siteUrl}/${slug}`,
     hashtags: "musicgenreator",
     via: "alex_tea"
   }
@@ -119,10 +119,10 @@ function makeFacebookShareUrl(genre, slug) {
   var faceBookUrl = "https://www.facebook.com/dialog/share";
   var faceBookQuery = {
     app_id: 2640283582660316,
-    quote: "My new favourite genre is " + emoji + " " + genre + " " + emoji,
-    href: siteUrl + "/" + slug,
+    quote: `My new favourite genre is ${emoji} ${genre} ${emoji}`,
+    href: `${siteUrl}/${slug}`,
     display: "page",
-    redirect_uri: siteUrl + "/" + slug
+    redirect_uri: `${siteUrl}/${slug}`
   }
 
   return buildUrlQueryString(faceBookUrl, faceBookQuery);
@@ -146,7 +146,7 @@ app.get('/', function (req, res, next) {
 
         // capture screenshot
         screenshot
-          .getScreenShot(siteUrl + '/screenshot/', slug)
+          .getScreenShot(`${siteUrl}/screenshot/${slug}`)
           .then(function(response){
             console.log("captured screenshot",response)
           })
@@ -156,6 +156,9 @@ app.get('/', function (req, res, next) {
       var twitterShareLink = makeTwitterShareUrl(genre, slug);
       var faceBookShareLink = makeFacebookShareUrl(genre, slug);
 
+      var emoji = getRandomWord(sharingEmojis);
+      console.log(emoji)
+      var description = `My new favourite genre is ${emoji} ${genre} ${emoji} — generate your own at ${siteUrl}`;
       var socialMediaCard = siteUrl + "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
 
       // don't cache the root url
@@ -165,6 +168,7 @@ app.get('/', function (req, res, next) {
         {
           slug: slug,
           genre: genre,
+          description: description,
           twitter_share_link: twitterShareLink,
           facebook_share_link: faceBookShareLink,
           social_media_card: socialMediaCard,
@@ -192,6 +196,8 @@ app.get('(/screenshot)?/:slug', function (req, res, next) {
         var twitterShareLink = makeTwitterShareUrl(genre, slug);
         var faceBookShareLink = makeFacebookShareUrl(genre, slug);
 
+        var emoji = getRandomWord(sharingEmojis);
+        var description = `My new favourite genre is ${emoji} ${genre} ${emoji} — generate your own at ${siteUrl}`;
         var socialMediaCard = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${slug}.${config.screenshotFormat}`
 
         var layout = (!req.params[0]) ? 'index.html' : 'screenshot.html';
@@ -200,6 +206,7 @@ app.get('(/screenshot)?/:slug', function (req, res, next) {
           {
             slug: slug,
             genre: genre,
+            description: description,
             twitter_share_link: twitterShareLink,
             facebook_share_link: faceBookShareLink,
             social_media_card: socialMediaCard
