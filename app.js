@@ -1,4 +1,5 @@
 var express     = require('express');
+var fetch       = require('node-fetch')
 var nunjucks    = require('nunjucks');
 var path        = require('path');
 var screenshot  = require('./utils/screenshot');
@@ -128,6 +129,30 @@ function makeFacebookShareUrl(genre, slug) {
   return buildUrlQueryString(faceBookUrl, faceBookQuery);
 }
 
+function captureScreenshot(slug) {
+  screenshot
+    .getScreenShot(`${siteUrl}/screenshot/`, slug)
+    .then(function(response){
+      console.log("captured screenshot",response)
+    })
+    .catch(console.error)
+}
+
+function checkScreenshot(slug) {
+  var imageUrl = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${slug}.${config.screenshotFormat}`;
+  fetch(imageUrl)
+    .then((res) => {
+      if (res.status > 400 && res.status < 500) {
+        // capture screenshot
+        console.log("screenshot doesn't exist")
+        captureScreenshot(slug)
+      } else {
+        // do nothing
+        return true
+      }
+    })
+}
+
 app.get('/favicon.ico', function(req, res, next) {
   res.sendStatus(404);
 })
@@ -153,12 +178,10 @@ app.get('/', function (req, res, next) {
         database.addGenre(genre, slug);
 
         // capture screenshot
-        screenshot
-          .getScreenShot(`${siteUrl}/screenshot/`, slug)
-          .then(function(response){
-            console.log("captured screenshot",response)
-          })
-          .catch(console.error)
+        captureScreenshot(slug)
+      } else {
+        // check if screenshot exists
+        checkScreenshot(slug)
       }
 
       var twitterShareLink = makeTwitterShareUrl(genre, slug);
@@ -198,6 +221,9 @@ app.get('(/screenshot)?/:slug', function (req, res, next) {
       } else {
         console.log(slug + ' exists in db', {data});
         var genre = data.genre;
+
+        // check if screenshot exists
+        checkScreenshot(slug)
 
         var twitterShareLink = makeTwitterShareUrl(genre, slug);
         var faceBookShareLink = makeFacebookShareUrl(genre, slug);
