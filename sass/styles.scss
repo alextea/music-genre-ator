@@ -1,5 +1,4 @@
 @import 'normalize';
-@import 'mq';
 @import 'gradient';
 
 // Colours
@@ -15,12 +14,14 @@ $gradients: (
 );
 
 // breakpoints
-$breakpoints: (
+$mq-breakpoints: (
   mobile:  320px,
   tablet:  740px,
   desktop: 980px,
-  wide:    1300px
+  wide:    1600px
 );
+
+@import 'mq';
 
 html {
   height: 100%;
