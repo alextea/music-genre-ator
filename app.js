@@ -136,8 +136,7 @@ app.get('/robots.txt', function (req, res, next) {
   res.type('text/plain');
   res.send(`
     User-agent: *
-    Allow: /$
-    Disallow: /
+    Allow: /
   `);
 })
 
