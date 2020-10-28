@@ -13,7 +13,7 @@
     "sqlite3": "^5.0.0"
   },
   "scripts": {
-    "deploy": "npm run build-css && npm run create-db && npm run copy-images",
+    "deploy": "npm run build-css && npm run copy-images",
     "postinstall": "npm run deploy",
     "create-db": "node utils/create_database.js",
     "copy-images": "cp -r images public/",
