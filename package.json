@@ -7,7 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.13.3",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "node-sass": "^7.0.0",
     "nunjucks": "^3.2.0",
     "sqlite3": "^5.0.0"
