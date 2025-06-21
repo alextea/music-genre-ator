@@ -1,6 +1,6 @@
 {
   "name": "music-genre-ator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A music genre generator",
   "main": "app.js",
   "author": "Alex Torrance",

@@ -1,3 +1,7 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:math";
+@use "sass:meta";
 // ----
 // Sass (v3.4.7)
 // Compass (v1.0.1)
@@ -10,22 +14,21 @@
 /// @return {Number} Converted angle
 @function convert-angle($value, $unit) {
   $convertable-units: deg grad turn rad;
-  $conversion-factors: 1 (10grad/9deg) (1turn/360deg) (3.1415926rad/180deg);
-  @if index($convertable-units, unit($value)) and index($convertable-units, $unit) {
-    @return $value
-             / nth($conversion-factors, index($convertable-units, unit($value)))
-             * nth($conversion-factors, index($convertable-units, $unit));
+  $conversion-factors: 1 math.div(10grad, 9deg) math.div(1turn, 360deg) math.div(3.1415926rad, 180deg);
+  @if list.index($convertable-units, math.unit($value)) and list.index($convertable-units, $unit) {
+    @return math.div($value, list.nth($conversion-factors, list.index($convertable-units, math.unit($value))))
+             * list.nth($conversion-factors, list.index($convertable-units, $unit));
   }
 
-  @warn "Cannot convert `#{unit($value)}` to `#{$unit}`.";
+  @warn "Cannot convert `#{math.unit($value)}` to `#{$unit}`.";
 }
 
 /// Test if `$value` is an angle
 /// @param {*} $value - Value to test
 /// @return {Bool}
 @function is-direction($value) {
-  $is-direction: index((to top, to top right, to right top, to right, to bottom right, to right bottom, to bottom, to bottom left, to left bottom, to left, to left top, to top left), $value);
-  $is-angle: type-of($value) == 'number' and index('deg' 'grad' 'turn' 'rad', unit($value));
+  $is-direction: list.index((to top, to top right, to right top, to right, to bottom right, to right bottom, to bottom, to bottom left, to left bottom, to left, to left top, to top left), $value);
+  $is-angle: meta.type-of($value) == 'number' and list.index('deg' 'grad' 'turn' 'rad', math.unit($value));
 
   @return $is-direction or $is-angle;
 }
@@ -54,8 +57,8 @@
     to top left     : bottom right
   );
 
-  @if map-has-key($conversion-map, $value) {
-    @return map-get($conversion-map, $value);
+  @if map.has-key($conversion-map, $value) {
+    @return map.get($conversion-map, $value);
   }
 
   @return 90deg - convert-angle($value, 'deg');
@@ -73,7 +76,7 @@
     $direction: 180deg;
   }
 
-  background: nth(nth($color-stops, 1), 1);
+  background: list.nth(list.nth($color-stops, 1), 1);
   background: -webkit-linear-gradient(legacy-direction($direction), $color-stops);
   background: linear-gradient($direction, $color-stops);
 }

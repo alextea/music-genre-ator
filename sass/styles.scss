@@ -1,5 +1,6 @@
-@import 'normalize';
-@import 'gradient';
+@use "sass:map";
+@use 'normalize';
+@use 'gradient';
 
 // Colours
 $gradients: (
@@ -14,14 +15,8 @@ $gradients: (
 );
 
 // breakpoints
-$mq-breakpoints: (
-  mobile:  320px,
-  tablet:  740px,
-  desktop: 980px,
-  wide:    1600px
-);
 
-@import 'mq';
+@use 'mq' with ($mq-breakpoints: (mobile: 320px, tablet: 740px, desktop: 980px, wide: 1600px));
 
 html {
   height: 100%;
@@ -34,10 +29,16 @@ body {
   -moz-animation: BackgroundAnimation 30s ease infinite;
   animation: BackgroundAnimation 30s ease infinite;
 
+  height: 100%;
+  margin: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   @-webkit-keyframes BackgroundAnimation {
-     0%{background-position:0% 50%}
-     50%{background-position:100% 50%}
-     100%{background-position:0% 50%}
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
   }
   @-moz-keyframes BackgroundAnimation {
      0%{background-position:0% 50%}
@@ -49,12 +50,6 @@ body {
      50%{background-position:100% 50%}
      100%{background-position:0% 50%}
   }
-
-  height: 100%;
-  margin: 0 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
 h1 {
@@ -81,23 +76,22 @@ h1 {
   font-weight: bold;
   text-align: center;
   text-transform: lowercase;
+  color: #fff;
 
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     font-size: 80px;
     line-height: 82px;
   }
 
-  @include mq($from: desktop) {
+  @include mq.mq($from: desktop) {
     font-size: 120px;
     line-height: 120px;
   }
 
-  @include mq($from: wide) {
+  @include mq.mq($from: wide) {
     font-size: 200px;
     line-height: 180px;
   }
-
-  color: #fff;
 }
 
 .actions {
@@ -109,7 +103,7 @@ h1 {
     margin: 0;
     padding:0;
 
-    @include mq($from: tablet) {
+    @include mq.mq($from: tablet) {
       display: flex;
       justify-content: space-between;
     }
@@ -120,12 +114,12 @@ h1 {
 
       margin-bottom: 1em;
 
-      @include mq($from: tablet) {
+      @include mq.mq($from: tablet) {
         margin-right: 5%;
       }
 
       &:last-child {
-        @include mq($from: tablet) {
+        @include mq.mq($from: tablet) {
           margin-right: 0;
         }
       }
@@ -162,7 +156,7 @@ footer {
 @for $i from 1 through 8 {
   .gradient-#{$i} {
     $this-gradient: "gradient-#{$i}";
-    @include linear-gradient(to right, map-get($gradients, $this-gradient));
+    @include gradient.linear-gradient(to right, map.get($gradients, $this-gradient));
     background-size: 300% 300%;
   }
 }
