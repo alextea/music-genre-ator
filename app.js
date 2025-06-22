@@ -1,11 +1,12 @@
-var express     = require('express');
-var fetch       = require('node-fetch')
-var nunjucks    = require('nunjucks');
-var path        = require('path');
-var screenshot  = require('./utils/screenshot');
-var database    = require('./utils/database_utils');
-var words       = require('./data/words.json');
-var app         = express();
+const express     = require('express');
+const fetch       = require('node-fetch')
+const nunjucks    = require('nunjucks');
+const path        = require('path');
+const screenshot  = require('./utils/screenshot');
+const database    = require('./utils/database_utils');
+const words       = require('./data/words.json');
+const app         = express();
+const querystring  = require('querystring');
 
 const config = require('./config.json');
 
@@ -90,16 +91,6 @@ function textToSlug(text) {
   return slug;
 }
 
-function buildUrlQueryString(url, query) {
-  url = url + "?";
-  for (q in query) {
-    url += q + "=" + encodeURIComponent(query[q]) + "&";
-  }
-
-  url = url.slice(0, -1);
-  return url;
-}
-
 var sharingEmojis = ["🎤", "🎧", "🎼", "🎹", "🥁", "🎷", "🎺", "🎸", "🎻", "💽", "💿", "🔊", "👩‍🎤", "👨🏻‍🎤" ];
 
 function makeTwitterShareUrl(genre, slug) {
@@ -112,7 +103,7 @@ function makeTwitterShareUrl(genre, slug) {
     via: "alex_tea"
   }
 
-  return buildUrlQueryString(twitterUrl, twitterQuery)
+  return `${twitterUrl}?${querystring.stringify(twitterQuery)}`;
 }
 
 function makeFacebookShareUrl(genre, slug) {
@@ -126,13 +117,14 @@ function makeFacebookShareUrl(genre, slug) {
     redirect_uri: `${siteUrl}/${slug}`
   }
 
-  return buildUrlQueryString(faceBookUrl, faceBookQuery);
+  return `${faceBookUrl}?${querystring.stringify(faceBookQuery)}`;
 }
 
 function captureScreenshot(slug) {
   screenshot
     .getScreenShot(`${siteUrl}/screenshot/`, slug)
     .then(function(response){
+      console.log(`${siteUrl}/screenshot/${slug}`)
       console.log("captured screenshot",response)
     })
     .catch(console.error)
@@ -209,7 +201,7 @@ app.get('/', function (req, res, next) {
     })
 })
 
-app.get('(/screenshot)?/:slug', function (req, res, next) {
+app.get('/{screenshot/}:slug', function (req, res, next) {
   var slug = req.params.slug;
   console.log("slug = "+slug);
   database.getGenre(slug)
