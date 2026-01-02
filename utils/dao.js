@@ -1,48 +1,56 @@
 // dao.js
-const sqlite3 = require('sqlite3')
+const { Pool } = require('pg')
 
 class AppDAO {
-  constructor(dbFilePath) {
-    this.db = new sqlite3.Database(dbFilePath, (err) => {
-      if (err) {
-        console.log('Could not connect to database', err)
-      } else {
-        console.log('Connected to database')
-      }
-    })
-  }
-
-  get(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      this.db.get(sql, params, (err, result) => {
-        if (err) {
-          console.log('Error running sql: ' + sql)
-          console.log(err)
-          reject(err)
-        } else {
-          resolve(result)
-        }
-      })
-    })
-
-    this.db.close()
-  }
-
-  run(sql, params = []) {
-    return new Promise((resolve, reject) => {
-      this.db.run(sql, params, function (err) {
-        if (err) {
-          console.log('Error running sql ' + sql)
-          console.log(err)
-          reject(err)
-        } else {
-          resolve({ id: this.lastID })
-        }
+  constructor(connectionString) {
+    // Use singleton pattern for pool - prevents creating multiple pools
+    if (!AppDAO.pool) {
+      AppDAO.pool = new Pool({
+        connectionString: connectionString,
+        ssl: process.env.NODE_ENV === 'production' ? {
+          rejectUnauthorized: false  // Railway requires this for self-signed certs
+        } : false
       })
 
-      this.db.close()
-    })
+      AppDAO.pool.on('error', (err) => {
+        console.error('Unexpected pool error', err)
+      })
+
+      console.log('Connected to database')
+    }
+    this.pool = AppDAO.pool
+  }
+
+  async get(sql, params = []) {
+    const client = await this.pool.connect()
+    try {
+      const result = await client.query(sql, params)
+      return result.rows[0]  // Return first row or undefined
+    } catch (err) {
+      console.log('Error running sql: ' + sql)
+      console.log(err)
+      throw err
+    } finally {
+      client.release()  // CRITICAL: Release client back to pool
+    }
+  }
+
+  async run(sql, params = []) {
+    const client = await this.pool.connect()
+    try {
+      const result = await client.query(sql, params)
+      return { id: result.rows[0]?.id }  // PostgreSQL returns RETURNING id
+    } catch (err) {
+      console.log('Error running sql ' + sql)
+      console.log(err)
+      throw err
+    } finally {
+      client.release()
+    }
   }
 }
+
+// Singleton pool instance
+AppDAO.pool = null
 
 module.exports = AppDAO
