@@ -7,7 +7,7 @@ class GenreRepository {
   createTable() {
     const sql = `
     CREATE TABLE IF NOT EXISTS genres (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       slug TEXT UNIQUE,
       genre TEXT)`
     return this.dao.run(sql)
@@ -15,19 +15,19 @@ class GenreRepository {
 
   create(genre,slug) {
     return this.dao.run(
-      'INSERT INTO genres (genre, slug) VALUES (?, ?)',
+      'INSERT INTO genres (genre, slug) VALUES ($1, $2) RETURNING id',
       [genre, slug])
   }
 
   getById(id) {
     return this.dao.get(
-      `SELECT * FROM genres WHERE id = ?`,
+      `SELECT * FROM genres WHERE id = $1`,
       [id])
   }
 
   getBySlug(slug) {
     return this.dao.get(
-      `SELECT * FROM genres WHERE slug = ?`,
+      `SELECT * FROM genres WHERE slug = $1`,
       [slug])
   }
 }
