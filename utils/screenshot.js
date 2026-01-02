@@ -1,4 +1,17 @@
-const config = require('../config.json')
+// Load environment variables in development
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
+// Screenshot configuration from environment variables
+const config = {
+  screenshotUrl: process.env.SCREENSHOT_URL,
+  saveS3Bucket: process.env.SAVE_S3_BUCKET,
+  saveS3Region: process.env.SAVE_S3_REGION,
+  screenshotW: parseInt(process.env.SCREENSHOT_WIDTH || '1200'),
+  screenshotH: parseInt(process.env.SCREENSHOT_HEIGHT || '630'),
+  screenshotFormat: process.env.SCREENSHOT_FORMAT || 'png'
+};
 
 const getScreenShot = async (url, slug) => {
   const body = {
