@@ -1,14 +1,26 @@
-const express     = require('express');
-const fetch       = require('node-fetch')
-const nunjucks    = require('nunjucks');
-const path        = require('path');
-const screenshot  = require('./utils/screenshot');
-const database    = require('./utils/database_utils');
-const words       = require('./data/words.json');
-const app         = express();
+// Load environment variables in development
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
+const express      = require('express');
+const nunjucks     = require('nunjucks');
+const path         = require('path');
+const screenshot   = require('./utils/screenshot');
+const database     = require('./utils/database_utils');
+const words        = require('./data/words.json');
+const app          = express();
 const querystring  = require('querystring');
 
-const config = require('./config.json');
+// Screenshot configuration from environment variables
+const config = {
+  screenshotUrl: process.env.SCREENSHOT_URL,
+  saveS3Bucket: process.env.SAVE_S3_BUCKET,
+  saveS3Region: process.env.SAVE_S3_REGION,
+  screenshotW: parseInt(process.env.SCREENSHOT_WIDTH || '1200'),
+  screenshotH: parseInt(process.env.SCREENSHOT_HEIGHT || '630'),
+  screenshotFormat: process.env.SCREENSHOT_FORMAT || 'png'
+};
 
 nunjucks.configure('views', {
   autoescape: true,
@@ -22,16 +34,9 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.use('/styles', express.static(path.join(__dirname, 'public/styles')));
 
-var env = process.env.NODE_ENV || "development";
-var port = process.env.PORT || 3000;
-var siteUrl = `http://localhost:${port}`;
-
-if (env == "production") {
-  var siteUrl = "https://musicgenre.site";
-}
-
-console.log({env});
-console.log({siteUrl})
+const env = process.env.NODE_ENV || "development";
+const port = process.env.PORT || 3000;
+const siteUrl = process.env.SITE_URL || `http://localhost:${port}`;
 
 function getRandomWord(array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -224,7 +229,7 @@ app.get('/{screenshot/}:slug', function (req, res, next) {
         var description = `My new favourite genre is ${emoji} ${genre} ${emoji} — generate your own at ${siteUrl}`;
         var socialMediaCard = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${slug}.${config.screenshotFormat}`
 
-        var layout = (!req.params[0]) ? 'index.html' : 'screenshot.html';
+        var layout = (req.url.indexOf('/screenshot') == -1) ? 'index.html' : 'screenshot.html';
 
         res.render(layout,
           {
