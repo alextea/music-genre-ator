@@ -1,4 +1,3 @@
-const fetch = require('node-fetch')
 const config = require('../config.json')
 
 const getScreenShot = async (url, slug) => {
@@ -22,12 +21,12 @@ const getScreenShot = async (url, slug) => {
     body: JSON.stringify(body)
   }
 
-  try {
-    const response = await fetch(config.screenshotUrl, settings)
-    const data = await response.text();
-    return data
-  } catch (e) {
-    return e
+  const response = await fetch(config.screenshotUrl, settings).catch(e => console.error(e));
+  if (!response.ok) {
+    throw new Error(`HTTP error status: ${response.status}`);
+  } else {
+    const data = response.text();
+    return data;
   }
 }
 
