@@ -8,7 +8,7 @@ const { Pool } = require('pg')
 const fs = require('fs')
 const path = require('path')
 
-const DATABASE_URL = process.env.DATABASE_URL
+const DATABASE_URL = process.env.DATABASE_PUBLIC_URL
 
 async function importData() {
   if (!DATABASE_URL) {
