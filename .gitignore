@@ -10,3 +10,4 @@ config.json
 .env
 migration/*.json
 migration/*.sql
+package-lock.json
