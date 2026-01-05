@@ -36,7 +36,9 @@ const getScreenShot = async (url, slug) => {
 
   const response = await fetch(config.screenshotUrl, settings).catch(e => console.error(e));
   if (!response.ok) {
-    throw new Error(`HTTP error status: ${response.status}`);
+    throw new Error(`HTTP error status: ${response.status}\n` +
+      `URL: ${config.screenshotUrl}\n` +
+      `Response: ${await response.text()}`);
   } else {
     const data = response.text();
     return data;
