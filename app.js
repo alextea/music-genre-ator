@@ -196,6 +196,7 @@ app.get('/', function (req, res, next) {
           slug: slug,
           genre: genre,
           description: description,
+          bluesky_share_link: makeBlueskyShareUrl(genre, slug),
           twitter_share_link: twitterShareLink,
           facebook_share_link: faceBookShareLink,
           social_media_card: socialMediaCard,
