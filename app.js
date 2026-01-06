@@ -6,21 +6,14 @@ if (process.env.NODE_ENV !== 'production') {
 const express      = require('express');
 const nunjucks     = require('nunjucks');
 const path         = require('path');
-const screenshot   = require('./utils/screenshot');
+const { captureScreenshot, config: screenshotConfig } = require('./utils/screenshot');
 const database     = require('./utils/database_utils');
 const words        = require('./data/words.json');
 const app          = express();
 const querystring  = require('querystring');
 
-// Screenshot configuration from environment variables
-const config = {
-  screenshotUrl: process.env.SCREENSHOT_URL,
-  saveS3Bucket: process.env.SAVE_S3_BUCKET,
-  saveS3Region: process.env.SAVE_S3_REGION,
-  screenshotW: parseInt(process.env.SCREENSHOT_WIDTH || '1200'),
-  screenshotH: parseInt(process.env.SCREENSHOT_HEIGHT || '630'),
-  screenshotFormat: process.env.SCREENSHOT_FORMAT || 'png'
-};
+// Use screenshot config from screenshot utility
+const config = screenshotConfig;
 
 nunjucks.configure('views', {
   autoescape: true,
@@ -125,29 +118,43 @@ function makeFacebookShareUrl(genre, slug) {
   return `${faceBookUrl}?${querystring.stringify(faceBookQuery)}`;
 }
 
-function captureScreenshot(slug) {
-  screenshot
-    .getScreenShot(`${siteUrl}/screenshot/`, slug)
+function makeBlueskyShareUrl(genre, slug) {
+  var emoji = getRandomWord(sharingEmojis);
+  var bskyUrl = "https://bsky.app/intent/compose";
+  var bskyQuery = {
+    text: `My new favourite genre is ${emoji} ${genre} ${emoji}\n\n${siteUrl}/${slug}`,
+  }
+
+  return `${bskyUrl}?${querystring.stringify(bskyQuery)}`;
+}
+
+// Wrapper for fire-and-forget screenshot capture
+function requestScreenshot(slug) {
+  captureScreenshot(`${siteUrl}/screenshot/`, slug)
     .then(function(response){
-      console.log(`${siteUrl}/screenshot/${slug}`)
-      console.log("captured screenshot",response)
+      console.log(`Screenshot requested for: ${siteUrl}/screenshot/${slug}`);
+      console.log(`Job ID: ${response.jobId}, Status: ${response.status}`);
     })
-    .catch(console.error)
+    .catch(function(error) {
+      console.error(`Screenshot request failed for ${slug}:`, error.message);
+    });
 }
 
 function checkScreenshot(slug) {
-  var imageUrl = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${slug}.${config.screenshotFormat}`;
-  fetch(imageUrl)
+  var imageUrl = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${config.appName}/${slug}.${config.screenshotFormat}`;
+  fetch(imageUrl, { method: 'HEAD' })
     .then((res) => {
-      if (res.status > 400 && res.status < 500) {
-        // capture screenshot
-        console.log("screenshot doesn't exist")
-        captureScreenshot(slug)
-      } else {
-        // do nothing
-        return true
+      if (res.status >= 400 && res.status < 500) {
+        // Screenshot doesn't exist, request it
+        console.log(`Screenshot doesn't exist for ${slug}, requesting...`);
+        requestScreenshot(slug);
       }
     })
+    .catch((error) => {
+      // On error, try to generate screenshot
+      console.error(`Error checking screenshot for ${slug}:`, error.message);
+      requestScreenshot(slug);
+    });
 }
 
 app.get('/favicon.ico', function(req, res, next) {
@@ -175,10 +182,10 @@ app.get('/', function (req, res, next) {
         database.addGenre(genre, slug);
 
         // capture screenshot
-        captureScreenshot(slug)
+        requestScreenshot(slug);
       } else {
         // check if screenshot exists
-        checkScreenshot(slug)
+        checkScreenshot(slug);
       }
 
       var twitterShareLink = makeTwitterShareUrl(genre, slug);
@@ -228,7 +235,7 @@ app.get('/{screenshot/}:slug', function (req, res, next) {
 
         var emoji = getRandomWord(sharingEmojis);
         var description = `My new favourite genre is ${emoji} ${genre} ${emoji} — generate your own at ${siteUrl}`;
-        var socialMediaCard = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${slug}.${config.screenshotFormat}`
+        var socialMediaCard = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${config.appName}/${slug}.${config.screenshotFormat}`
 
         var layout = (req.url.indexOf('/screenshot') == -1) ? 'index.html' : 'screenshot.html';
 
