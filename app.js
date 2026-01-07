@@ -196,7 +196,14 @@ app.get('/', function (req, res, next) {
       var description = `My new favourite genre is ${emoji} ${genre} ${emoji} — generate your own at ${siteUrl}`;
       var socialMediaCard = siteUrl + "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
 
-      var shareContent = `My new favourite genre is ${emoji} ${genre} ${emoji}\n\nGenerate your own at ${siteUrl}/${slug}`;
+      var shareTemplates = [
+        `My new favourite genre is ${emoji} ${genre} ${emoji}\n\nGenerate your own: ${siteUrl}/${slug}`,
+        `Just discovered ${emoji} ${genre} ${emoji}\n\nWhat's yours? ${siteUrl}/${slug}`,
+        `The algorithm has spoken: ${emoji} ${genre} ${emoji}\n\nYour turn: ${siteUrl}/${slug}`,
+        `Now accepting demo submissions for my new ${emoji} ${genre} ${emoji} label\n\nMake yours: ${siteUrl}/${slug}`,
+        `${emoji} ${genre} ${emoji} is my jam! What's yours? ${siteUrl}/${slug}`
+      ];
+      var shareContent = getRandomWord(shareTemplates);
 
       // don't cache the root url
       res.setHeader('Cache-Control', 'max-age=1');
