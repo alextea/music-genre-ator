@@ -12,6 +12,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <script src="/scripts/main.js" defer></script>
+
   <meta property="og:title" content="Music Genre-ator — Generate random music genres">
   <meta property="og:type" content="website">
   <meta property="og:description" content="{{ description }}">
@@ -28,9 +30,20 @@
   <div class="actions">
     <ul>
       <li><a href="/">Generate another</a></li>
-      <li><a href="/{{ slug }}">Get Permalink</a></li>
-      <li><a href="{{ bluesky_share_link }}" target="_blank">Share on Bluesky</a></li>
+      <li><a href="/{{ slug }}" id="js-open-share">Share this genre</a></li>
+      <li><a href="{{ bluesky_share_link }}" target="_blank">Post on Bluesky</a></li>
     </ul>
+
+    <div class="share-pane js-hidden">
+      <div class="share-content">
+        <textarea name="share-content" readonly>{{ share_content }}</textarea>
+
+        <div class="share-actions">
+          <button class="button" id="js-copy">Copy text</button>
+          <button class="button" id="js-cancel-share">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
 </body>
 </html>

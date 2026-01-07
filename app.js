@@ -26,6 +26,7 @@ app.set({'views': './views'});
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.use('/styles', express.static(path.join(__dirname, 'public/styles')));
+app.use('/scripts', express.static(path.join(__dirname, 'public/scripts')));
 
 const env = process.env.NODE_ENV || "development";
 const port = process.env.PORT || 3000;
@@ -82,9 +83,9 @@ function generateGenre() {
 
 function textToSlug(text) {
   var slug = text
-              .toLowerCase()
-              .replace(/[^a-z0-9\s]*/g, '')
-              .replace(/\s+/g, '-');
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]*/g, '')
+    .replace(/\s+/g, '-');
 
   return slug;
 }
@@ -195,6 +196,8 @@ app.get('/', function (req, res, next) {
       var description = `My new favourite genre is ${emoji} ${genre} ${emoji} — generate your own at ${siteUrl}`;
       var socialMediaCard = siteUrl + "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
 
+      var shareContent = `My new favourite genre is ${emoji} ${genre} ${emoji}\n\nGenerate your own at ${siteUrl}/${slug}`;
+
       // don't cache the root url
       res.setHeader('Cache-Control', 'max-age=1');
 
@@ -207,6 +210,7 @@ app.get('/', function (req, res, next) {
           twitter_share_link: twitterShareLink,
           facebook_share_link: faceBookShareLink,
           social_media_card: socialMediaCard,
+          share_content: shareContent
       });
     })
     .catch(function(error) {
