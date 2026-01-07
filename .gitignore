@@ -1,7 +1,8 @@
 .sass-cache
 .DS_Store
 .start.pid
-public
+public/styles
+public/images
 node_modules
 .claude/
 *.sqlite3
