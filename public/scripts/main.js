@@ -1,24 +1,12 @@
 (function() {
   'use strict';
 
-  // Hide elements with .js-hidden class on page load
-  function hideJsHiddenElements() {
-    const hiddenElements = document.querySelectorAll('.js-hidden');
-    hiddenElements.forEach(function(element) {
-      element.style.display = 'none';
-    });
-  }
-
-  // Toggle share pane visibility
+  // Toggle share pane visibility with slide animation
   function toggleSharePane() {
     const sharePane = document.querySelector('.share-pane');
     if (!sharePane) return;
 
-    if (sharePane.style.display === 'none' || sharePane.style.display === '') {
-      sharePane.style.display = 'block';
-    } else {
-      sharePane.style.display = 'none';
-    }
+    sharePane.classList.toggle('is-open');
   }
 
   // Copy text to clipboard
@@ -75,9 +63,6 @@
 
   // Initialize event listeners
   function init() {
-    // Hide .js-hidden elements
-    hideJsHiddenElements();
-
     // Get elements
     const openShareButton = document.getElementById('js-open-share');
     const copyButton = document.getElementById('js-copy');
