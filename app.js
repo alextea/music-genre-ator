@@ -97,17 +97,19 @@ function generateShareContent(genre, slug) {
 
   var shareTemplates = [
     `My new favourite genre is ${emoji} ${genre} ${emoji}\n\nGenerate your own: ${siteUrl}/${slug}`,
-    `Just discovered ${emoji} ${genre} ${emoji}\n\nWhat's yours? ${siteUrl}/${slug}`,
+    `Just discovered ${emoji} ${genre} ${emoji}\n\nWhat's next? ${siteUrl}/${slug}`,
     `The algorithm has spoken: ${emoji} ${genre} ${emoji}\n\nYour turn: ${siteUrl}/${slug}`,
     `Now accepting demo submissions for my new ${emoji} ${genre} ${emoji} label\n\nMake yours: ${siteUrl}/${slug}`,
     `${emoji} ${genre} ${emoji} is my jam! What's yours? ${siteUrl}/${slug}`
   ];
 
+  var shareText = getRandomWord(shareTemplates);
+
   return {
     emoji: emoji,
-    text: getRandomWord(shareTemplates),
+    text: shareText,
     blueskyUrl: `https://bsky.app/intent/compose?${querystring.stringify({
-      text: `My new favourite genre is ${emoji} ${genre} ${emoji}\n\n${siteUrl}/${slug}`
+      text: shareText
     })}`
   };
 }
@@ -173,7 +175,7 @@ app.get('/', function (req, res, next) {
       }
 
       var shareData = generateShareContent(genre, slug);
-      var description = `My new favourite genre is ${shareData.emoji} ${genre} ${shareData.emoji} — generate your own at ${siteUrl}`;
+      var description = shareData.text;
       var socialMediaCard = siteUrl + "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
 
       // don't cache the root url
@@ -211,7 +213,7 @@ app.get('/{screenshot/}:slug', function (req, res, next) {
         checkScreenshot(slug)
 
         var shareData = generateShareContent(genre, slug);
-        var description = `My new favourite genre is ${shareData.emoji} ${genre} ${shareData.emoji} — generate your own at ${siteUrl}`;
+        var description = shareData.text;
         var socialMediaCard = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${config.appName}/${slug}.${config.screenshotFormat}`
 
         var layout = (req.url.indexOf('/screenshot') == -1) ? 'index.html' : 'screenshot.html';
