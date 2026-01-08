@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Listen to {{ genre }} — Music Genre-ator</title>
+  <meta name="description" content="{{ description }}">
+  <meta name="author" content="Alex Torrance http://www.alextorrance.co.uk">
+
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="https://use.typekit.net/bwe1rlc.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="/scripts/main.js" defer></script>
+
+  <meta property="og:title" content="Listen to {{ genre }} — Music Genre-ator">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:image" content="{{ social_media_card }}">
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:creator" content="@alex_tea" />
+</head>
+
+<body class="gradient-{{ [1, 2, 3, 4, 5, 6, 7, 8] | random }}">
+  <h1>Music Genre-ator</h1>
+
+  <div class="genre">{{ genre }}</div>
+
+  <div class="music-section">
+    {% if music_data and music_data.hasResults %}
+      <h2>Top tracks for this genre</h2>
+
+      <div class="track-list">
+        <ul>
+          {% for track in music_data.tracks %}
+          <li class="track-item">
+            <div class="track-info">
+              <div class="track-name"><a href="{{ track.url }}">{{ track.name }}</a></div>
+              <div class="track-artist"><a href="{{ track.artist.url }}">{{ track.artist }}</a></div>
+            </div>
+            <div class="track-stats">
+              <span class="track-listeners">{{ track.listeners | formatNumber }} listeners</span>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="music-platforms">
+        <a href="{{ music_data.appleMusicUrl }}" target="_blank" rel="noopener" class="music-platform-button apple-music">
+          Open in Apple Music
+        </a>
+        <a href="{{ music_data.spotifyUrl }}" target="_blank" rel="noopener" class="music-platform-button spotify">
+          Open in Spotify
+        </a>
+      </div>
+
+      <h3>Alternative genre searches</h3>
+
+      <div class="music-platforms music-platforms-alt">
+        <a href="{{ music_data.appleMusicGenreUrl }}" target="_blank" rel="noopener" class="music-platform-button apple-music-alt">
+          Search "{{ genre }}" on Apple Music
+        </a>
+        <a href="{{ music_data.spotifyGenreUrl }}" target="_blank" rel="noopener" class="music-platform-button spotify-alt">
+          Search "{{ genre }}" on Spotify
+        </a>
+      </div>
+    {% else %}
+      <h2>No tracks found</h2>
+      <p>We couldn't find any tracks for this genre on Last.fm, but you can still search for it:</p>
+
+      <div class="music-platforms">
+        <a href="{{ music_data.spotifyUrl }}" target="_blank" rel="noopener" class="music-platform-button spotify">
+          Search on Spotify
+        </a>
+        <a href="{{ music_data.appleMusicUrl }}" target="_blank" rel="noopener" class="music-platform-button apple-music">
+          Search on Apple Music
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="actions">
+    <ul>
+      <li><a href="/">Generate another</a></li>
+      <li><a href="/listen/{{ slug }}" class="active">Listen to this genre</a></li>
+      <li><a href="/{{ slug }}" id="js-open-share">Share this genre</a></li>
+      <li><a href="{{ bluesky_share_link }}" target="_blank">Post on Bluesky</a></li>
+    </ul>
+
+    <div class="share-pane">
+      <div class="share-content">
+        <textarea name="share-content" readonly>{{ share_content }}</textarea>
+
+        <div class="share-actions">
+          <button class="button" id="js-copy">Copy text</button>
+          <button class="button" id="js-cancel-share">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
