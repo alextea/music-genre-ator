@@ -92,41 +92,24 @@ function textToSlug(text) {
 
 var sharingEmojis = ["🎤", "🎧", "🎼", "🎹", "🥁", "🎷", "🎺", "🎸", "🎻", "💽", "💿", "🔊", "👩‍🎤", "👨🏻‍🎤" ];
 
-function makeTwitterShareUrl(genre, slug) {
+function generateShareContent(genre, slug) {
   var emoji = getRandomWord(sharingEmojis);
-  var twitterUrl = "https://twitter.com/intent/tweet";
-  var twitterQuery = {
-    text: `My new favourite genre is ${emoji} ${genre} ${emoji}`,
-    url: `${siteUrl}/${slug}`,
-    hashtags: "musicgenreator",
-    via: "alex_tea"
-  }
 
-  return `${twitterUrl}?${querystring.stringify(twitterQuery)}`;
-}
+  var shareTemplates = [
+    `My new favourite genre is ${emoji} ${genre} ${emoji}\n\nGenerate your own: ${siteUrl}/${slug}`,
+    `Just discovered ${emoji} ${genre} ${emoji}\n\nWhat's yours? ${siteUrl}/${slug}`,
+    `The algorithm has spoken: ${emoji} ${genre} ${emoji}\n\nYour turn: ${siteUrl}/${slug}`,
+    `Now accepting demo submissions for my new ${emoji} ${genre} ${emoji} label\n\nMake yours: ${siteUrl}/${slug}`,
+    `${emoji} ${genre} ${emoji} is my jam! What's yours? ${siteUrl}/${slug}`
+  ];
 
-function makeFacebookShareUrl(genre, slug) {
-  var emoji = getRandomWord(sharingEmojis);
-  var faceBookUrl = "https://www.facebook.com/dialog/share";
-  var faceBookQuery = {
-    app_id: 2640283582660316,
-    quote: `My new favourite genre is ${emoji} ${genre} ${emoji}`,
-    href: `${siteUrl}/${slug}`,
-    display: "page",
-    redirect_uri: `${siteUrl}/${slug}`
-  }
-
-  return `${faceBookUrl}?${querystring.stringify(faceBookQuery)}`;
-}
-
-function makeBlueskyShareUrl(genre, slug) {
-  var emoji = getRandomWord(sharingEmojis);
-  var bskyUrl = "https://bsky.app/intent/compose";
-  var bskyQuery = {
-    text: `My new favourite genre is ${emoji} ${genre} ${emoji}\n\n${siteUrl}/${slug}`,
-  }
-
-  return `${bskyUrl}?${querystring.stringify(bskyQuery)}`;
+  return {
+    emoji: emoji,
+    text: getRandomWord(shareTemplates),
+    blueskyUrl: `https://bsky.app/intent/compose?${querystring.stringify({
+      text: `My new favourite genre is ${emoji} ${genre} ${emoji}\n\n${siteUrl}/${slug}`
+    })}`
+  };
 }
 
 // Wrapper for fire-and-forget screenshot capture
@@ -189,21 +172,9 @@ app.get('/', function (req, res, next) {
         checkScreenshot(slug);
       }
 
-      var twitterShareLink = makeTwitterShareUrl(genre, slug);
-      var faceBookShareLink = makeFacebookShareUrl(genre, slug);
-
-      var emoji = getRandomWord(sharingEmojis);
-      var description = `My new favourite genre is ${emoji} ${genre} ${emoji} — generate your own at ${siteUrl}`;
+      var shareData = generateShareContent(genre, slug);
+      var description = `My new favourite genre is ${shareData.emoji} ${genre} ${shareData.emoji} — generate your own at ${siteUrl}`;
       var socialMediaCard = siteUrl + "/images/social-media-card-0" + (Math.floor(Math.random() * 9) + 1) + ".png";
-
-      var shareTemplates = [
-        `My new favourite genre is ${emoji} ${genre} ${emoji}\n\nGenerate your own: ${siteUrl}/${slug}`,
-        `Just discovered ${emoji} ${genre} ${emoji}\n\nWhat's yours? ${siteUrl}/${slug}`,
-        `The algorithm has spoken: ${emoji} ${genre} ${emoji}\n\nYour turn: ${siteUrl}/${slug}`,
-        `Now accepting demo submissions for my new ${emoji} ${genre} ${emoji} label\n\nMake yours: ${siteUrl}/${slug}`,
-        `${emoji} ${genre} ${emoji} is my jam! What's yours? ${siteUrl}/${slug}`
-      ];
-      var shareContent = getRandomWord(shareTemplates);
 
       // don't cache the root url
       res.setHeader('Cache-Control', 'max-age=1');
@@ -213,11 +184,9 @@ app.get('/', function (req, res, next) {
           slug: slug,
           genre: genre,
           description: description,
-          bluesky_share_link: makeBlueskyShareUrl(genre, slug),
-          twitter_share_link: twitterShareLink,
-          facebook_share_link: faceBookShareLink,
+          bluesky_share_link: shareData.blueskyUrl,
           social_media_card: socialMediaCard,
-          share_content: shareContent
+          share_content: shareData.text
       });
     })
     .catch(function(error) {
@@ -241,11 +210,8 @@ app.get('/{screenshot/}:slug', function (req, res, next) {
         // check if screenshot exists
         checkScreenshot(slug)
 
-        var twitterShareLink = makeTwitterShareUrl(genre, slug);
-        var faceBookShareLink = makeFacebookShareUrl(genre, slug);
-
-        var emoji = getRandomWord(sharingEmojis);
-        var description = `My new favourite genre is ${emoji} ${genre} ${emoji} — generate your own at ${siteUrl}`;
+        var shareData = generateShareContent(genre, slug);
+        var description = `My new favourite genre is ${shareData.emoji} ${genre} ${shareData.emoji} — generate your own at ${siteUrl}`;
         var socialMediaCard = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${config.appName}/${slug}.${config.screenshotFormat}`
 
         var layout = (req.url.indexOf('/screenshot') == -1) ? 'index.html' : 'screenshot.html';
@@ -255,9 +221,9 @@ app.get('/{screenshot/}:slug', function (req, res, next) {
             slug: slug,
             genre: genre,
             description: description,
-            twitter_share_link: twitterShareLink,
-            facebook_share_link: faceBookShareLink,
-            social_media_card: socialMediaCard
+            bluesky_share_link: shareData.blueskyUrl,
+            social_media_card: socialMediaCard,
+            share_content: shareData.text
         });
       }
     })
