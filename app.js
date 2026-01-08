@@ -7,6 +7,7 @@ const express      = require('express');
 const nunjucks     = require('nunjucks');
 const path         = require('path');
 const { captureScreenshot, config: screenshotConfig } = require('./utils/screenshot');
+const { generateMusicData } = require('./utils/music');
 const database     = require('./utils/database_utils');
 const words        = require('./data/words.json');
 const app          = express();
@@ -15,10 +16,16 @@ const querystring  = require('querystring');
 // Use screenshot config from screenshot utility
 const config = screenshotConfig;
 
-nunjucks.configure('views', {
+const nunjucksEnv = nunjucks.configure('views', {
   autoescape: true,
   express: app,
   noCache: true
+});
+
+// Add custom filter to format numbers with commas
+nunjucksEnv.addFilter('formatNumber', function(num) {
+  if (!num) return '0';
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 });
 
 app.set({'views': './views'});
@@ -227,6 +234,44 @@ app.get('/{screenshot/}:slug', function (req, res, next) {
             social_media_card: socialMediaCard,
             share_content: shareData.text
         });
+      }
+    })
+    .catch(function(error) {
+      next(error);
+    })
+})
+
+app.get('/listen/:slug', function (req, res, next) {
+  var slug = req.params.slug;
+  console.log("listen slug = " + slug);
+
+  database.getGenre(slug)
+    .then(function(data) {
+      if (!data) {
+        var err = new Error("Genre not found");
+        err.status = 404;
+        next(err);
+      } else {
+        console.log('Fetching music for: ' + slug);
+        var genre = data.genre;
+
+        // Fetch music data from Last.fm
+        return generateMusicData(genre)
+          .then(function(musicData) {
+            var shareData = generateShareContent(genre, slug);
+            var description = shareData.text;
+            var socialMediaCard = `https://${config.saveS3Bucket}.s3.${config.saveS3Region}.amazonaws.com/${config.appName}/${slug}.${config.screenshotFormat}`;
+
+            res.render('listen.html', {
+              slug: slug,
+              genre: genre,
+              description: description,
+              bluesky_share_link: shareData.blueskyUrl,
+              social_media_card: socialMediaCard,
+              share_content: shareData.text,
+              music_data: musicData
+            });
+          });
       }
     })
     .catch(function(error) {
