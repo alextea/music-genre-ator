@@ -12,6 +12,13 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <!-- Favicons -->
+  {% set favicon_num = [1, 2, 3, 4, 5, 6, 7, 8] | random %}
+  <link rel="icon" type="image/x-icon" href="/images/favicon-{{ favicon_num }}.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-{{ favicon_num }}-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-{{ favicon_num }}-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-{{ favicon_num }}-180x180.png">
+
   <script src="/scripts/main.js" defer></script>
   <script src="/scripts/deezer-player.js" defer></script>
 
