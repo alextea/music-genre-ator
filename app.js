@@ -152,7 +152,7 @@ function checkScreenshot(slug) {
 }
 
 app.get('/favicon.ico', function(req, res, next) {
-  res.sendStatus(404);
+  res.sendFile(path.join(__dirname, 'public', 'images', 'favicon-1.ico'));
 })
 
 app.get('/robots.txt', function (req, res, next) {
