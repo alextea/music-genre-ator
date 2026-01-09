@@ -107,7 +107,8 @@ function generateShareContent(genre, slug) {
     `Just discovered ${emoji} ${genre} ${emoji}\n\nWhat's next? ${siteUrl}/${slug}`,
     `The algorithm has spoken: ${emoji} ${genre} ${emoji}\n\nYour turn: ${siteUrl}/${slug}`,
     `Now accepting demo submissions for my new ${emoji} ${genre} ${emoji} label\n\nMake yours: ${siteUrl}/${slug}`,
-    `${emoji} ${genre} ${emoji} is my jam! What's yours? ${siteUrl}/${slug}`
+    `${emoji} ${genre} ${emoji} is my jam! What's yours? ${siteUrl}/${slug}`,
+    `${emoji} I was into ${genre} ${emoji} Before it was cool ${siteUrl}/${slug}`
   ];
 
   var shareText = getRandomWord(shareTemplates);
