@@ -279,6 +279,39 @@ app.get('/listen/:slug', function (req, res, next) {
     })
 })
 
+// Deezer API proxy to avoid CORS issues
+app.get('/api/deezer/search', function (req, res) {
+  const query = req.query.q;
+
+  if (!query) {
+    return res.status(400).json({ error: 'Missing query parameter' });
+  }
+
+  const https = require('https');
+  const url = `https://api.deezer.com/search?q=${encodeURIComponent(query)}&limit=1`;
+
+  https.get(url, (apiRes) => {
+    let data = '';
+
+    apiRes.on('data', (chunk) => {
+      data += chunk;
+    });
+
+    apiRes.on('end', () => {
+      try {
+        const jsonData = JSON.parse(data);
+        res.json(jsonData);
+      } catch (error) {
+        console.error('Deezer API response parsing error:', error);
+        res.status(500).json({ error: 'Failed to parse Deezer response' });
+      }
+    });
+  }).on('error', (error) => {
+    console.error('Deezer API request error:', error);
+    res.status(500).json({ error: 'Failed to fetch from Deezer' });
+  });
+});
+
 app.use(function (err, req, res, next) {
   console.error(err)
   res.status(err.status);
