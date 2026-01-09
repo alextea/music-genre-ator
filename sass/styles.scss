@@ -94,6 +94,8 @@ h3 {
   text-transform: lowercase;
   color: #fff;
 
+  margin: 40px 0;
+
   @include mq.mq($from: tablet) {
     font-size: 80px;
     line-height: 82px;
@@ -170,6 +172,11 @@ a, button {
     opacity: 0.9;
   }
 
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
   &.active {
     background-color: #fff;
     color: #000;
@@ -225,7 +232,6 @@ footer {
 .music-section {
   border-top: 1px solid #fff;
   padding-top: 20px;
-  margin-top: 40px;
   color: #fff;
 
   p {
@@ -303,6 +309,7 @@ footer {
 
     .track-item {
       display: flex;
+      gap: 15px;
       justify-content: space-between;
       align-items: center;
       padding: 15px 20px;
@@ -348,7 +355,69 @@ footer {
         text-align: left;
       }
     }
+
+    .play-button {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      padding: 0;
+      overflow: clip;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+        border-color: #fff;
+      }
+
+      &:focus-visible, &:focus {
+        background-color: transparent;
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+      }
+
+      .play-icon {
+        display: inline-block;
+        height: 100%;
+        width: 100%;
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      .play-icon.play-icon--play {
+        background-image: url(/images/play.svg);
+      }
+      .play-icon.play-icon--pause {
+        background-image: url(/images/pause.svg);
+      }
+      .play-icon.play-icon--loading {
+        background-image: url(/images/loading.svg);
+        animation: spin 1s linear infinite;
+      }
+
+      &.is-hidden {
+        display: none;
+      }
+
+      @include mq.mq($until: tablet) {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+      }
+    }
   }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @for $i from 1 through 8 {
