@@ -13,6 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script src="/scripts/main.js" defer></script>
+  <script src="/scripts/deezer-player.js" defer></script>
 
   <meta property="og:title" content="Listen to {{ genre }} — Music Genre-ator">
   <meta property="og:type" content="website">
@@ -35,9 +36,16 @@
         <ul>
           {% for track in music_data.tracks %}
           <li class="track-item">
+            <button class="play-button"
+                    data-artist="{{ track.artist }}"
+                    data-track="{{ track.name }}"
+                    aria-label="Play {{ track.name }} by {{ track.artist }}"
+                    type="button">
+              <span class="play-icon play-icon--play" aria-hidden="true"></span>
+            </button>
             <div class="track-info">
-              <div class="track-name"><a href="{{ track.url }}">{{ track.name }}</a></div>
-              <div class="track-artist"><a href="{{ track.artist.url }}">{{ track.artist }}</a></div>
+              <div class="track-name"><a href="{{ track.url }}" target="_blank">{{ track.name }}</a></div>
+              <div class="track-artist"><a href="{{ track.artist.url }}" target="_blank">{{ track.artist }}</a></div>
             </div>
             <div class="track-stats">
               <span class="track-listeners">{{ track.listeners | formatNumber }} listeners</span>
@@ -47,25 +55,6 @@
         </ul>
       </div>
 
-      <div class="music-platforms">
-        <a href="{{ music_data.appleMusicUrl }}" target="_blank" rel="noopener" class="music-platform-button apple-music">
-          Open in Apple Music
-        </a>
-        <a href="{{ music_data.spotifyUrl }}" target="_blank" rel="noopener" class="music-platform-button spotify">
-          Open in Spotify
-        </a>
-      </div>
-
-      <h3>Alternative genre searches</h3>
-
-      <div class="music-platforms music-platforms-alt">
-        <a href="{{ music_data.appleMusicGenreUrl }}" target="_blank" rel="noopener" class="music-platform-button apple-music-alt">
-          Search "{{ genre }}" on Apple Music
-        </a>
-        <a href="{{ music_data.spotifyGenreUrl }}" target="_blank" rel="noopener" class="music-platform-button spotify-alt">
-          Search "{{ genre }}" on Spotify
-        </a>
-      </div>
     {% else %}
       <h2>No tracks found</h2>
       <p>We couldn't find any tracks for this genre on Last.fm, but you can still search for it:</p>
