@@ -22,6 +22,10 @@
   <script src="/scripts/main.js" defer></script>
   <script src="/scripts/deezer-player.js" defer></script>
 
+  {% if umami_url and umami_website_id %}
+  <script async src="{{ umami_url }}/script.js" data-website-id="{{ umami_website_id }}"></script>
+  {% endif %}
+
   <meta property="og:title" content="Listen to {{ genre }} — Music Genre-ator">
   <meta property="og:type" content="website">
   <meta property="og:description" content="{{ description }}">

@@ -38,6 +38,8 @@ app.use('/scripts', express.static(path.join(__dirname, 'public/scripts')));
 const env = process.env.NODE_ENV || "development";
 const port = process.env.PORT || 3000;
 const siteUrl = process.env.SITE_URL || `http://localhost:${port}`;
+const umamiUrl = process.env.UMAMI_URL || '';
+const umamiWebsiteId = process.env.UMAMI_WEBSITE_ID || '';
 
 function getRandomWord(array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -196,7 +198,9 @@ app.get('/', function (req, res, next) {
           description: description,
           bluesky_share_link: shareData.blueskyUrl,
           social_media_card: socialMediaCard,
-          share_content: shareData.text
+          share_content: shareData.text,
+          umami_url: umamiUrl,
+          umami_website_id: umamiWebsiteId
       });
     })
     .catch(function(error) {
@@ -270,7 +274,9 @@ app.get('/listen/:slug', function (req, res, next) {
               bluesky_share_link: shareData.blueskyUrl,
               social_media_card: socialMediaCard,
               share_content: shareData.text,
-              music_data: musicData
+              music_data: musicData,
+              umami_url: umamiUrl,
+              umami_website_id: umamiWebsiteId
             });
           });
       }

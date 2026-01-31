@@ -21,6 +21,10 @@
 
   <script src="/scripts/main.js" defer></script>
 
+  {% if umami_url and umami_website_id %}
+  <script async src="{{ umami_url }}/script.js" data-website-id="{{ umami_website_id }}"></script>
+  {% endif %}
+
   <meta property="og:title" content="Music Genre-ator — Generate random music genres">
   <meta property="og:type" content="website">
   <meta property="og:description" content="{{ description }}">
