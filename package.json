@@ -11,6 +11,7 @@
   "dependencies": {
     "dotenv": "^16.6.1",
     "express": "^5.2.1",
+    "music-genre-lastfm-utils": "github:alextea/music-genre-lastfm-utils",
     "nunjucks": "^3.2.4",
     "pg": "^8.16.3",
     "sass": "^1.97.1"

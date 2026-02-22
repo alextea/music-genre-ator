@@ -13,26 +13,21 @@ It uses [loune/web-rendering-lambda](https://github.com/loune/web-rendering-lamb
 ## Installing 💾
 To run the app locally, clone the repo and then run `npm install`
 
-`npm run deploy` will build the css files, create the sqlite3 database and copy the static assets
+`npm run deploy` will build the CSS files and copy the static assets.
 
-Then you can run `npm run dev-start` to run the app using nodemon and watch the scss files for changes.
-
-### Screenshots 🖼
-To capture the screenshots you will need your own install of [loune/web-rendering-lambda](https://github.com/loune/web-rendering-lambda) and a publicly readable S3 bucket to save the images in.
+Then you can run `npm run dev-start` to run the app using nodemon and watch the SCSS files for changes.
 
 ### Configuration ⚙️
-You will need to create a file called `config.json` in the root folder in order to capture the screenshots
+Copy `.env.example` to `.env` and fill in the values. Required variables:
 
-```json
-{
-  "screenshotUrl": "", // the url to access your install of web-rendering-lambda
-  "saveS3Bucket": "", // the name of the S3 bucket to save the screenshots to
-  "saveS3Region": "", // the region the S3 bucket is in
-  "screenshotW": 1200, // the width of the screenshots
-  "screenshotH": 630, // the height of the screenshots
-  "screenshotFormat": "png" // the format to capture the screenshots
-}
-```
+- `DATABASE_URL` — PostgreSQL connection string
+- `LASTFM_API_KEY` — [Last.fm API key](https://www.last.fm/api/account/create) for the `/listen` track lookup
+
+### Screenshots 🖼
+To capture the screenshots you will need your own install of [loune/web-rendering-lambda](https://github.com/loune/web-rendering-lambda) and a publicly readable S3 bucket to save the images in. Configure the relevant S3 and screenshot variables in `.env`.
+
+### Last.fm track lookup 🎵
+The `/listen/:slug` route fetches tracks from Last.fm for each genre using [music-genre-lastfm-utils](https://github.com/alextea/music-genre-lastfm-utils). It tries the full genre name as a tag first, then falls back to a sliding-window n-gram search so that multi-word tags like "hip hop" are found before individual words.
 
 ## List of words 📜
 The list of words is stored in `/data/words.json` and is separated in adjectives and nouns.
